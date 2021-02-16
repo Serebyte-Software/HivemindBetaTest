@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Level Editor
+		</title>
+	</head>
+	
+	<body>
+		<canvas id="myCanvas" width="1280" height="960" style="background: black"></canvas>
+		<h2>Select the tool you want to use</h2>
+		
+		<select id="toolMenu">
+			<option value="0">Eraser</option>
+			<option value="1">Centre Block</option>
+			<option value="2">Reinforced Block</option>
+			<option value="3">Right Block</option>
+			<option value="4">Up Block</option>
+			<option value="5">Left Block</option>
+			<option value="6">Down Block</option>
+			<option value="7">Top Left Block</option>
+			<option value="8">Top Right Block</option>
+			<option value="9">Bottom Left Block</option>
+			<option value="10">Bottom Right Block</option>
+			<option value="p">Player Spawn</option>
+			<option value="w">Exit</option>
+			<option value="s">Sentry Guard</option>
+			<option value="a">Acid</option>
+			<option value="ab">Acid Bot</option>
+			<option value="rl">Red Laser Gate</option>
+			<option value="rb">Red button</option>
+			<option value="bl">Blue Laser Gate</option>
+			<option value="bb">Blue button</option>
+			<option value="gl">Green Laser Gate</option>
+			<option value="gb">Green button</option>
+			<option value="d">Djinn</option>
+			<option value="m">Marksman</option>
+			<option value="sb">Shield Bot</option>
+			
+		</select>
+		
+		<br/>
+		<br/>
+		<button onclick="showMap()">Get Map As Text</button>
+		<br/>
+		<br/>
+		<textarea id="textOutput"></textarea>
+	</body>
+	
+	<script>
+		//load canvas 
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		//load images 
+		var images = [];
+		
+		function loadImage(img, src){
+			img.src = src;
+			
+			img.onload = () => {
+				//load images 
+				console.log("Loaded: " + src);
+			};
+		};
+		
+		//create tile image 
+		var spr_block00 = new Image();
+		loadImage(spr_block00, "src/tiles/block00.png");
+		
+		var spr_block01 = new Image();
+		loadImage(spr_block01, "src/tiles/block01.png");
+		
+		var spr_block02 = new Image();
+		loadImage(spr_block02, "src/tiles/block02.png");
+		
+		var spr_block03 = new Image();
+		loadImage(spr_block03, "src/tiles/block03.png");
+		
+		var spr_block04 = new Image();
+		loadImage(spr_block04, "src/tiles/block04.png");
+		
+		var spr_block05 = new Image();
+		loadImage(spr_block05, "src/tiles/block05.png");
+		
+		var spr_block06 = new Image();
+		loadImage(spr_block06, "src/tiles/block06.png");
+		
+		var spr_block07 = new Image();
+		loadImage(spr_block07, "src/tiles/block07.png");
+		
+		var spr_block08 = new Image();
+		loadImage(spr_block08, "src/tiles/block08.png");
+		
+		var spr_block09 = new Image();
+		loadImage(spr_block09, "src/tiles/block09.png");
+		
+		
+		/*
+		//load floor images
+		var brick = new Image();
+		createImage(brick, "src/tiles/brick.png");
+	
+		var crackedBrick = new Image();
+		createImage(crackedBrick, "src/tiles/crackedBrick.png");
+
+		var floor1 = new Image();
+		createImage(floor1, "src/tiles/floor1.png");
+
+		var floor2 = new Image();
+		createImage(floor2, "src/tiles/floor2.png");
+
+		//get toolMenu 
+		var toolMenu = document.getElementById("toolMenu");
+		
+		//get text output
+		var textOutput = document.getElementById("textOutput");
+		
+		//load tiles 
+		var brick = new Image();
+		createImage(brick, "src/tiles/brick.png");
+
+		var floor1 = new Image();
+		createImage(floor1, "src/tiles/floor1.png");
+
+		var floor2 = new Image();
+		createImage(floor2, "src/tiles/floor2.png");
+	*/
+	
+		//input 
+		var input = {
+			x: 0,
+			y: 0,
+			mouseDown: false,
+		};
+		
+		//create map item keys 
+		var z = "z"; //zeus 
+		var h = "h"; //hades
+		var p = "p"; //poseidon
+		var w = "w"; //win
+		var e = "e"; //electricity trap
+		var ps = "ps"; //power supply
+		var s = "s"; //sentry
+		var a = "a"; //acid
+		var ab = "ab"; //acid bot
+		var rl = "rl"; //red laser 
+		var rb = "rb"; //red button
+		var bl = "bl"; //blue laser
+		var bb = "bb"; //blue button
+		var gl = "gl"; //green laser
+		var gb = "gb"; //green button
+		var d = "d"; //djinn
+		var m = "m"; //marksman
+		var sb = "sb"; //shield bot
+		
+		//create level 
+		/*
+		var level = [
+			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		];
+		*/
+		
+		var level = [];
+		
+		//declare gobal variables 
+		var tileSize = 32;
+		var tileX = 0;
+		var tileY = 0;
+		var levelWidth = canvas.width;
+		var levelHeight = canvas.height;
+		//var solidBlocks = ["1","2","3","4","5","6","7","8","9","10"];
+		var solidBlocks = ["1","2","3","4","5","6","7","8","9","10",1,2,3,4,5,6,7,8,9,10];
+		var solidBlockImages = [spr_block00, spr_block01, spr_block02, spr_block03, spr_block04, spr_block05, spr_block06, spr_block07, spr_block08, spr_block09, spr_block00, spr_block01, spr_block02, spr_block03, spr_block04, spr_block05, spr_block06, spr_block07, spr_block08, spr_block09];
+			
+		for(let i = 0; i < (levelWidth * levelHeight)/tileSize; i++){
+			level.push(0);
+		};
+		
+		//render grid 
+		function renderGrid(){
+			//set strokeStyle and lineWidth
+			ctx.strokeStyle = "white";
+			ctx.lineWidth = 1;
+			
+			//draw background grid - columns
+			for(let i = 0; i < Math.round(canvas.width / tileSize); i++){
+				ctx.beginPath();
+				ctx.moveTo(i * tileSize,0);
+				ctx.lineTo(i * tileSize, canvas.height);
+				ctx.stroke();
+				ctx.closePath();
+			};
+			
+			//draw background grid - rows
+			for(let i = 0; i < Math.round(canvas.height / tileSize); i++){
+				ctx.beginPath();
+				ctx.moveTo(0,i * tileSize);
+				ctx.lineTo(canvas.width, i * tileSize);
+				ctx.stroke();
+				ctx.closePath();
+			};
+		};
+
+		//render tiles
+		function renderTiles(){
+			//draw tiles from levelMap
+			tileX = tileSize / 2;
+			tileY = tileSize / 2;
+			
+			for(let i = 0; i < level.length; i++){
+				//draw if levelMap[i] == 1
+				if(level[i] == p){
+					ctx.beginPath();
+					ctx.fillStyle = "blue";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.closePath();
+				} else if(level[i] == w){
+					ctx.fillStyle = "yellow";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				} else if(level[i] == a){
+					ctx.fillStyle = "darkgreen";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				} else if(level[i] == rl){
+					ctx.fillStyle = "red";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				} else if(level[i] == bl){
+					ctx.fillStyle = "blue";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				} else if(level[i] == gl){
+					ctx.fillStyle = "green";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				} else if(level[i] == rb){
+					ctx.fillStyle = "red";
+					ctx.fillRect(tileX - tileSize / 2, tileY + tileSize / 4, tileSize, tileSize / 4);
+				} else if(level[i] == bb){
+					ctx.fillStyle = "blue";
+					ctx.fillRect(tileX - tileSize / 2, tileY + tileSize / 4, tileSize, tileSize / 4);
+				} else if(level[i] == gb){
+					ctx.fillStyle = "green";
+					ctx.fillRect(tileX - tileSize / 2, tileY + tileSize / 4, tileSize, tileSize / 4);
+				} else if(level[i] == e){
+				 	ctx.fillStyle = "lightblue";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				} else if(level[i] == s){
+					ctx.beginPath();
+					ctx.fillStyle = "darkred";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.font = "16px Arial";
+					ctx.fillText("S",tileX,tileY);
+					ctx.closePath();
+				} else if(level[i] == ab){
+					ctx.beginPath();
+					ctx.fillStyle = "darkred";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.font = "12px Arial";
+					ctx.fillText("AB",tileX,tileY);
+					ctx.closePath();
+				} else if(level[i] == d){
+					ctx.fillStyle = "darkred";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.font = "16px Arial";
+					ctx.fillText("d",tileX,tileY);
+				} else if(level[i] == m){
+					ctx.fillStyle = "darkred";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.font = "16px Arial";
+					ctx.fillText("m",tileX,tileY);
+				} else if(level[i] == sb){
+					ctx.fillStyle = "darkred";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.font = "16px Arial";
+					ctx.fillText("sb",tileX,tileY);
+				} else if(solidBlocks.indexOf(level[i]) != -1){
+					ctx.drawImage(solidBlockImages[solidBlocks.indexOf(level[i])], tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+				};
+				
+				if(input.x > 0 && input.x < levelWidth && input.y > 0 && input.y < levelHeight && i == calculateTileIndex(input.x,input.y)){
+					ctx.globalAlpha = 0.5;
+					ctx.fillStyle = "red";
+					ctx.fillRect(tileX - tileSize / 2, tileY - tileSize / 2, tileSize, tileSize);
+					ctx.globalAlpha = 1;
+				};
+					
+				//move along 
+				tileX += tileSize;
+				
+				if(tileX >= canvas.width){
+					tileX = tileSize / 2;
+					tileY += tileSize;
+				};
+				
+			};
+		};
+		
+		//calculate tile index 
+		function calculateTileIndex(x,y){
+			let rows = Math.floor(y / tileSize);
+			return (rows * (levelWidth / tileSize)) + Math.floor(x / tileSize); 
+		};
+		
+		//start main loop 
+		function mainLoop(){
+			//clear screen
+			ctx.clearRect(0,0,canvas.width,canvas.height);
+			
+			//place tile 
+			if(input.mouseDown  && input.x > 0 && input.x < levelWidth && input.y > 0 && input.y < levelHeight){
+				level[calculateTileIndex(input.x,input.y)] = toolMenu.value;
+			};
+			
+			//render tiles 
+			renderTiles();
+			
+			//render grid 
+			renderGrid();
+			
+			//draw cursor
+			/*
+			ctx.beginPath();
+			ctx.arc(input.x,input.y, 8, 0, 360 * Math.PI / 180);
+			ctx.fillStyle = "red";
+			ctx.fill();
+			ctx.closePath();
+			*/
+			
+			//call next frame 
+			requestAnimationFrame(mainLoop);
+		};
+		
+		//get event listeners 
+		document.addEventListener("mousemove", (e) => {
+			//get mouse x and y 
+			input.x = e.x - canvas.offsetLeft + window.pageXOffset;
+			input.y = e.y - canvas.offsetLeft + window.pageYOffset;
+		});
+		
+		//mouse down event listener 
+		document.addEventListener("mousedown", () => { 
+			input.mouseDown = true;
+		});
+		
+		document.addEventListener("mouseup", () => { 
+			input.mouseDown = false;
+		});
+		
+		//show map 
+		function showMap(){
+			textOutput.innerHTML = "[" + level + "],"; 
+			textOutput.select();
+			document.execCommand("copy");
+		};
+		
+		//start main loop 
+		mainLoop();
+	</script>
+</html>
