@@ -3237,6 +3237,18 @@
 					shieldBotBehaviour.call(this);
 				};
 				
+				//render shield 
+				renderShield(){
+					//draw shield 
+					ctx.globalAlpha = 0.5;
+					ctx.beginPath();
+					ctx.arc(this.x,this.y,this.shieldRadius,0,2 * Math.PI);
+					ctx.fillStyle = "lightblue";
+					ctx.fill();
+					ctx.closePath();
+					ctx.globalAlpha = 1;
+				};
+				
 				//render 
 				render(){
 					//animate
@@ -3295,15 +3307,6 @@
 						ctx.rotate(-this.angle);
 						ctx.translate(-this.x, -(this.y - 8));
 					};
-					
-					//draw shield 
-					ctx.globalAlpha = 0.5;
-					ctx.beginPath();
-					ctx.arc(this.x,this.y,this.shieldRadius,0,2 * Math.PI);
-					ctx.fillStyle = "lightblue";
-					ctx.fill();
-					ctx.closePath();
-					ctx.globalAlpha = 1;
 				};
 			};
 			
@@ -3961,6 +3964,22 @@
 				//render particles
 				for(let i = 0; i < particles.length; i++){
 					particles[i].render();
+				};
+				
+				//render enemy shields
+				for(let i = 0; i < enemies.length; i++){
+					if(enemies[i].subType == "shieldBot"){
+						enemies[i].renderShield();
+					};
+				};
+				
+				//render players 
+				for(let i = 0; i < players.length; i++){
+					if(players[i].type == "marauder"){
+						if(players[i].subType == "shieldBot"){
+							players[i].render();
+						};
+					};
 				};
 				
 				//render player indicators 
@@ -4959,7 +4978,7 @@
 				//check if slot 3
 				if(localStorage.serebyteHivemindSave3){
 					//create buttons 
-					new MenuButton(canvas.width / 2, canvas.height * 0.3, 500, 64,"Slot 3:  " + Math.round(localStorage.serebyteHivemindSave3[0] / levels.length * 100) + "% completed", "25px sevenet", ()=>{transitionInstance = new Transition("black", () => {
+					new MenuButton(canvas.width / 2, canvas.height * 0.7, 500, 64,"Slot 3:  " + Math.round(localStorage.serebyteHivemindSave3[0] / levels.length * 100) + "% completed", "25px sevenet", ()=>{transitionInstance = new Transition("black", () => {
 						save = localStorage.serebyteHivemindSave3;
 						saveSlot = 3;
 						goToLevelSelect();
