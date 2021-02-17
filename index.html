@@ -550,9 +550,10 @@
 			var audioInstance = null;
 			var paused = false;s
 			var saveSlot = 1;
+			var drawCursorOverlay = false;
 			
 			//level bgs 
-			var levelBGs = [spr_bg1];
+			var levelBGs = [];
 			
 			//create cutscenes 
 			cutscenes = [
@@ -1988,20 +1989,23 @@
 				
 				//special 
 				special(){
-					//shoot 
-					if(input.mouseDown && input.mouseDownPressed == false && ammo > 0){
-						//decrement ammo counter 
-						ammo --;
-						
-						//if noise on 
-						if(sound){
-							//play noise 
-							audioInstance = new Audio("src/sfx/shoot.wav");
-							audioInstance.play();
+					//check that not hovering over button
+					if(!drawCursorOverlay){
+						//shoot 
+						if(input.mouseDown && input.mouseDownPressed == false && ammo > 0){
+							//decrement ammo counter 
+							ammo --;
+							
+							//if noise on 
+							if(sound){
+								//play noise 
+								audioInstance = new Audio("src/sfx/shoot.wav");
+								audioInstance.play();
+							};
+							
+							//create nanobot 
+							new Nanobot(this.x + (Math.cos(this.angle) * this.width / 2), this.y + (Math.sin(this.angle) * this.width / 2), this.angle);
 						};
-								
-						//create nanobot 
-						new Nanobot(this.x + (Math.cos(this.angle) * this.width / 2), this.y + (Math.sin(this.angle) * this.width / 2), this.angle);
 					};
 				};
 				
@@ -2928,8 +2932,11 @@
 						};
 						*/
 						
-						//shoot 
-						new EnemyBullet(this.x + (Math.cos(this.angle) * this.width / 2),this.y + (Math.sin(this.angle) * this.width / 2),this.angle,4,4,12,"lightblue", true);		
+						//check that not hovering over button
+						if(!drawCursorOverlay){
+							//shoot 
+							new EnemyBullet(this.x + (Math.cos(this.angle) * this.width / 2),this.y + (Math.sin(this.angle) * this.width / 2),this.angle,4,4,12,"lightblue", true);		
+						};
 					};
 				};
 				
@@ -4155,12 +4162,18 @@
 			function implementOptions(){
 				//check state 
 				if(state == "game" || state == "menu" || state == "levelSelect"){
+					//draw cursor 
+					drawCursorOverlay = false;
+					
 					//check state 
 					if(state == "game"){
 						//pause button
 						if(input.mouseX > 400 && input.mouseX < 400 + 32 && input.mouseY > 4 && input.mouseY < 4 + 32){
 							//draw pause button
 							ctx.drawImage(spr_pauseButtonH, 400, 4);
+							
+							//enable cursor overlay
+							drawCursorOverlay = true;
 							
 							//check if clicked 
 							if(input.mouseDown && input.mouseDownPressed == false){
@@ -4172,6 +4185,9 @@
 						} else {
 							ctx.drawImage(spr_pauseButton, 400, 4);
 						};	
+						
+						//draw cursor 
+						//ctx.drawImage(spr_cursor, input.mouseX, input.mouseY);
 					};
 					
 					//update music, sound and fullscreen buttons 
@@ -4183,6 +4199,9 @@
 							ctx.drawImage(spr_noMusicButtonH, 450, 4);
 						};
 						
+						//enable cursor overlay
+						drawCursorOverlay = true;
+							
 						//check if clicked 
 						if(input.mouseDown && input.mouseDownPressed == false){
 							if(music == true){
@@ -4220,6 +4239,9 @@
 							ctx.drawImage(spr_noSoundButtonH, 500, 4);
 						};
 						
+						//enable cursor overlay
+						drawCursorOverlay = true;
+						
 						//check if clicked 
 						if(input.mouseDown && input.mouseDownPressed == false){
 							if(sound == true){
@@ -4253,6 +4275,9 @@
 							ctx.drawImage(spr_noFullscreenButtonH, 550, 4);
 						};
 						
+						//enable cursor overlay
+						drawCursorOverlay = true;
+							
 						//check if clicked 
 						if(input.mouseDown && input.mouseDownPressed == false){
 							if(gameFullscreen == true){
@@ -4273,6 +4298,12 @@
 						} else {
 							ctx.drawImage(spr_noFullscreenButton, 550, 4);
 						};	
+					};
+					
+					//check if should draw cursor overlay 
+					if(drawCursorOverlay){
+						//draw cursor 
+						ctx.drawImage(spr_cursor, input.mouseX, input.mouseY);
 					};
 				};
 			};
