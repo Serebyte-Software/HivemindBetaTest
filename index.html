@@ -10,11 +10,127 @@
 				font-family: "sevenet";
 				src: url("src/fonts/sevenet7.ttf");
 			}
+			
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			header {
+				padding: 5px;
+				margin: 0px;
+				background-color: #363636;
+			}
+			
+			section {
+				padding: 5px 15px;
+				margin: 0px;
+				background-color: #212121;
+			}
+			
+			footer {
+				padding: 5px;
+				margin: 0px;
+				background-color: #363636;
+			}
+			
+			h1 {
+				font-family: Sevenet;
+				color: white;
+			}
+			
+			h2 {
+				font-family: Sevenet;
+				color: white;
+			}
+			
+			h3 {
+				font-family: Sevenet;
+				color: white;
+			}
+			
+			h4 {
+				font-family: Sevenet;
+				color: white;
+			}
+			
+			h5 {
+				font-family: Sevenet;
+				color: white;
+			}
+			
+			p { 
+				font-family: Sevenet;
+				color: white;
+			}
 		</style>
 	</head>
 	
 	<body>
-		<canvas id="myCanvas" width="640" height="480" style="cursor: none; background:black"></canvas>
+		<header>
+			<center>
+				<h1 style="font: sevenet; color: white">
+					Hivemind
+				</h1>
+			</center>
+		</head>
+		
+		<section>
+			<center>
+				<canvas id="myCanvas" width="640" height="480" style="cursor: none; background:black"></canvas>
+			</center>
+			
+			<br/>
+			
+			<hr/>
+			
+			<br/>
+			
+			<h2>
+				Instructions:
+			</h2>
+			
+			<p>
+				-Use A to move left 
+				<br/>
+				-Use D to move right
+				<br/>
+				-Use W or SPACE to jump / fly (where appropriate)
+				<br/>
+				-Click to launch use a special move (e.g. launch nanobots, swing sword, fire plasma cannon, etc.)
+				<br/>
+				-Use Q and E to cycle through all players (e.g. converted robots / marauders)
+				<br/>
+				-Press R to restart the level
+				<br/>
+				-Get the astronaut to the end of the level to win
+				<br/>
+				-Different enemies do different things when converted - use these abilities to your advantage
+				<br/>				
+			</p>
+			
+			<hr/>
+			
+			<br/>
+			
+			<h2>
+				About the Game:
+			</h2>
+			
+			<p>
+				Hivemind is a puzzle platformer game made by Will Punter in 2021. It aims to fuse the puzzle-platformer and shooter genres to create an experience that will challenge your skill and your mind. You play as a scientist alone on a hijacked spaceship. Facing a vast robotic army, and insurmountable odds, you must use your inginuity and experimental technology to escape, by turning your enemies' strengths against them. As of February 2021, there are 30 levels - 3 chapters each with 10 sections.		
+			</p>
+		</section>
+		
+		<footer>
+			<center>
+				<p>
+					Programmed By Will Punter in 2021
+				</p>
+			</center>
+		</footer>
+		
+		<script src="src/jqueryMain.js"></script>
 		
 		<script>
 			//load canvas 
@@ -551,6 +667,8 @@
 			var paused = false;s
 			var saveSlot = 1;
 			var drawCursorOverlay = false;
+			var mainXScroll = 0;
+			var mainYScroll = 0;
 			
 			//level bgs 
 			var levelBGs = [];
@@ -5120,8 +5238,10 @@
 			//mouse move handler 
 			function mouseMoveHandler(e){
 				//set x and y 
-				input.mouseX = e.x - canvas.offsetLeft + document.body.scrollLeft;
-				input.mouseY = e.y - canvas.offsetTop + document.body.scrollTop;
+				//input.mouseX = e.x - canvas.offsetLeft + document.body.scrollLeft;
+				//input.mouseY = e.y - canvas.offsetTop + document.body.scrollTop;
+				input.mouseX = e.x - canvas.offsetLeft + $(document).scrollLeft();
+				input.mouseY = e.y - canvas.offsetTop + $(document).scrollTop();	
 			};
 			
 			//on fullscreen change 
@@ -5134,6 +5254,12 @@
 					gameFullscreen = true;
 					console.log("fullscreen");
 				};
+			});
+			
+			//scroll event 
+			window.addEventListener("scroll", ()=>{
+				mainYScroll = window.scrollY;
+				mainXScroll = window.scrollX;
 			});
 			
 			//fade to 
