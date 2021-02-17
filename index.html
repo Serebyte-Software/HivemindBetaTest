@@ -1127,7 +1127,7 @@
 							interceptX = (yIntercept2 - yIntercept1) / (gradient1 - gradient2);
 							interceptY = (gradient1 * interceptX) + yIntercept1;
 						} else {
-							console.log("a");
+							//console.log("a");
 						};
 						
 						//check if intercept coordinates are between players and within their tile 
@@ -1161,7 +1161,7 @@
 							interceptX = (yIntercept2 - yIntercept1) / (gradient1 - gradient2);
 							interceptY = (gradient1 * interceptX) + yIntercept1;
 						} else {
-							console.log("a");
+							//console.log("a");
 						};
 						
 						//check if intercept coordinates are between players and within their tile 
@@ -1171,7 +1171,7 @@
 							if(interceptX >= getLowest([a.x, b.x]) && interceptX <= getHighest([a.x, b.x]) && interceptY >= getLowest([a.y, b.y]) && interceptY <= getHighest([a.y, b.y])){
 								//collision has occured 
 								return false;
-								console.log("e");
+								//console.log("e");
 							
 							};
 						};
@@ -2714,7 +2714,9 @@
 							new Particle(this.x, this.y, 4, 4, -4 + Math.random() * 8, -2 - Math.random() * 2, "darkred", 60);
 							new Particle(this.x, this.y, 4, 4, -4 + Math.random() * 8, -2 - Math.random() * 2, "grey", 60);
 						};
-						console.log("a");
+						
+						//console.log("a");
+						
 						//set alive to false 
 						this.alive = false;
 						
@@ -3431,7 +3433,7 @@
 									//check save slot 
 									if(saveSlot == 1){
 										localStorage.serebyteHivemindSave1 = save;
-										console.log(localStorage.serebyteHivemindSave1);
+										//console.log(localStorage.serebyteHivemindSave1);
 									} else if(saveSlot == 2){
 										localStorage.serebyteHivemindSave2 = save;
 									} else if(saveSlot == 3){
@@ -3444,13 +3446,13 @@
 									//change save 
 									if(save[0] == "1"){
 										save = save.replace("1","2");
-										console.log(save);
+										//console.log(save);
 									};
 									
 									//check save slot 
 									if(saveSlot == 1){
 										localStorage.serebyteHivemindSave1 = save;
-										console.log(localStorage.serebyteHivemindSave1);
+										//console.log(localStorage.serebyteHivemindSave1);
 									} else if(saveSlot == 2){
 										localStorage.serebyteHivemindSave2 = save;
 									} else if(saveSlot == 3){
@@ -3463,13 +3465,13 @@
 									//change save 
 									if(save[0] == "2"){
 										save = save.replace("2","3");
-										console.log(save);
+										//console.log(save);
 									};
 									
 									//check save slot 
 									if(saveSlot == 1){
 										localStorage.serebyteHivemindSave1 = save;
-										console.log(localStorage.serebyteHivemindSave1);
+										//console.log(localStorage.serebyteHivemindSave1);
 									} else if(saveSlot == 2){
 										localStorage.serebyteHivemindSave2 = save;
 									} else if(saveSlot == 3){
@@ -5268,10 +5270,10 @@
 				//fullscreen
 				if(gameFullscreen){
 					gameFullscreen = false;
-					console.log("a");
+					//console.log("a");
 				} else {
 					gameFullscreen = true;
-					console.log("fullscreen");
+					//console.log("fullscreen");
 				};
 			});
 			
