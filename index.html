@@ -646,7 +646,7 @@
 			var music = false;
 			var sound = false;
 			var gameFullscreen = false;
-			var save = [];
+			var save = "0";
 			var doorXOffset = 0;
 			var controlPanelYOffset = 0;
 			var doorSpeed = 2;
@@ -3422,7 +3422,7 @@
 									//change save 
 									if(save[0] == "0"){
 										save = save.replace("0","1");
-										console.log(save);
+										console.log("Updated save " + saveSlot + ": " + save);
 									};
 									
 									//check save slot 
